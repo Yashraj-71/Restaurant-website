@@ -51,3 +51,17 @@ if (slider) {
 
     setInterval(nextSlide, 3000);
 }
+
+/* ===== ADD THIS AT VERY BOTTOM ===== */
+window.toggleMenu = function(id) {
+    let current = document.getElementById("menu-" + id);
+
+    document.querySelectorAll(".menu-items").forEach(menu => {
+        if (menu !== current) {
+            menu.style.display = "none";
+        }
+    });
+
+    current.style.display =
+        current.style.display === "block" ? "none" : "block";
+}

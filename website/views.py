@@ -2,6 +2,9 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect, render
+from django.core.mail import send_mail
+from django.conf import settings
+from twilio.rest import Client
 
 from .forms import InquiryForm
 
@@ -11,82 +14,201 @@ def home(request):
         {
             "title": "Sweets",
             "items": [
-                {"name": "Kaju Katli", "description": "Classic cashew delight."},
-                {"name": "Gulab Jamun", "description": "Soft balls in sugar syrup."},
-                {"name": "Rasgulla", "description": "Spongy chenna sweet."},
-                {"name": "Rasmalai", "description": "Saffron milk dumplings."},
-                {"name": "Milk Cake", "description": "Rich caramelized milk sweet."},
-                {"name": "Motichoor Laddu", "description": "Fine boondi laddus."},
-                {"name": "Besan Laddu", "description": "Roasted gram flour laddus."},
-                {"name": "Peda", "description": "Traditional milk peda."},
-                {"name": "Soan Papdi", "description": "Flaky festive favorite."},
-                {"name": "Kalakand", "description": "Soft grainy milk bar."},
-                {"name": "Mysore Pak", "description": "Ghee-rich gram sweet."},
-                {"name": "Balushahi", "description": "Layered glazed pastry sweet."},
-                {"name": "Jalebi", "description": "Hot crisp sugar spirals."},
-                {"name": "Rabri", "description": "Thick sweetened milk dessert."},
-                {"name": "Cham Cham", "description": "Cream-filled chenna sweet."},
-                {"name": "Coconut Barfi", "description": "Fresh coconut fudge."},
-                {"name": "Dry Fruit Roll", "description": "Premium nut-filled roll."},
-                {"name": "Anjeer Barfi", "description": "Fig and nut barfi."},
-            ],
+            {"name": "Kaju Katli", "price": "₹900/kg"},
+            {"name": "Gulab Jamun", "price": "₹25/pc"},
+            {"name": "Rasgulla", "price": "₹25/pc"},
+            {"name": "Rasmalai", "price": "₹50/pc"},
+            {"name": "Milk Cake", "price": "₹450/kg"},
+            {"name": "Motichoor Laddu", "price": "₹500/kg"},
+            {"name": "Besan Laddu", "price": "₹400/kg"},
+            {"name": "Peda", "price": "₹420/kg"},
+            {"name": "Soan Papdi", "price": "₹300/kg"},
+            {"name": "Kalakand", "price": "₹480/kg"},
+            {"name": "Mysore Pak", "price": "₹520/kg"},
+            {"name": "Balushahi", "price": "₹380/kg"},
+            {"name": "Jalebi", "price": "₹300/kg"},
+            {"name": "Rabri", "price": "₹60/bowl"},
+            {"name": "Cham Cham", "price": "₹40/pc"},
+            {"name": "Coconut Barfi", "price": "₹450/kg"},
+            {"name": "Dry Fruit Roll", "price": "₹1100/kg"},
+            {"name": "Anjeer Barfi", "price": "₹1200/kg"},
+    ],
         },
         {
             "title": "Restaurant",
             "items": [
-                {"name": "Royal Thali", "description": "Complete meal platter."},
-                {"name": "Paneer Butter Masala", "description": "Creamy tomato gravy paneer."},
-                {"name": "Shahi Paneer", "description": "Rich cashew gravy paneer."},
-                {"name": "Dal Makhani", "description": "Slow-cooked black lentils."},
-                {"name": "Mix Veg Curry", "description": "Seasonal vegetables curry."},
-                {"name": "Jeera Rice", "description": "Fragrant cumin rice."},
-                {"name": "Veg Biryani", "description": "Spiced layered rice."},
-                {"name": "Tandoori Roti", "description": "Clay oven flatbread."},
-                {"name": "Butter Naan", "description": "Soft naan with butter."},
-                {"name": "Stuffed Kulcha", "description": "Potato-stuffed kulcha bread."},
-                {"name": "Chole Bhature", "description": "Spiced chickpeas with bhature."},
-                {"name": "Aloo Paratha", "description": "Stuffed pan-fried flatbread."},
-                {"name": "Masala Dosa", "description": "Crisp dosa with potato filling."},
-                {"name": "Idli Sambar", "description": "Steamed idli with sambar."},
-                {"name": "Veg Hakka Noodles", "description": "Indo-Chinese noodles."},
-                {"name": "Paneer Tikka", "description": "Grilled marinated paneer cubes."},
-                {"name": "Malai Kofta", "description": "Kofta in creamy gravy."},
-                {"name": "Veg Fried Rice", "description": "Wok-tossed rice dish."},
-            ],
+    {"name": "Water Bottle", "price": "MRP"},
+    {"name": "Spe Tea", "price": "₹30"},
+    {"name": "Coffee", "price": "₹40"},
+    {"name": "Hot Milk", "price": "₹40"},
+    {"name": "Cold Drink", "price": "MRP"},
+
+    {"name": "Paneer Tikka Dry", "price": "₹350"},
+
+    {"name": "Pyaj Salad", "price": "₹40"},
+    {"name": "Tomato Salad", "price": "₹60"},
+    {"name": "Green Salad", "price": "₹80"},
+    {"name": "Cucumber Salad", "price": "₹60"},
+
+    {"name": "Rosted Papad", "price": "₹20"},
+    {"name": "Masala Papad", "price": "₹40"},
+    {"name": "Fry Papad", "price": "₹40"},
+    {"name": "Fry Masala Papad", "price": "₹60"},
+
+    {"name": "Sada Dahi", "price": "₹50"},
+    {"name": "Plain Raita", "price": "₹70"},
+    {"name": "Veg Raita", "price": "₹80"},
+    {"name": "Boondi Raita", "price": "₹80"},
+
+    {"name": "Plain Rice", "price": "₹90"},
+    {"name": "Jeera Rice", "price": "₹100"},
+    {"name": "Lemon Rice", "price": "₹120"},
+    {"name": "Mattar Pulav", "price": "₹130"},
+    {"name": "Veg Pulav", "price": "₹150"},
+    {"name": "Hyderabadi Biryani", "price": "₹180"},
+    {"name": "Veg Biryani", "price": "₹180"},
+
+    {"name": "Namkeen Chach", "price": "₹30"},
+    {"name": "Namkeen Lassi", "price": "₹60"},
+    {"name": "Mithi Lassi", "price": "₹50"},
+
+    {"name": "Matar Paneer", "price": "₹200"},
+    {"name": "Palak Paneer", "price": "₹220"},
+    {"name": "Shahi Paneer", "price": "₹220"},
+    {"name": "Paneer Do Pyaza", "price": "₹230"},
+    {"name": "Kadai Paneer", "price": "₹230"},
+    {"name": "Handi Paneer", "price": "₹250"},
+    {"name": "Kadai Paneer (Special)", "price": "₹260"},
+    {"name": "Paneer Lababdar", "price": "₹240"},
+    {"name": "Paneer Butter Masala", "price": "₹250"},
+    {"name": "Kaaju Paneer Masala", "price": "₹300"},
+    {"name": "Paneer Bhurji", "price": "₹300"},
+    {"name": "Kaaju Kari", "price": "₹280"},
+    {"name": "Mushroom Mattar", "price": "₹220"},
+    {"name": "Mushroom Masala", "price": "₹250"},
+    {"name": "Kadai Mushroom", "price": "₹230"},
+    {"name": "Paneer Kolhapuri", "price": "₹250"},
+    {"name": "Paneer Toofani", "price": "₹240"},
+    {"name": "Veg Jaipuri", "price": "₹200"},
+    {"name": "Methi Malai Matar", "price": "₹200"},
+    {"name": "Malai Kofta", "price": "₹250"},
+    {"name": "Paneer Amritsari", "price": "₹260"},
+    {"name": "Paneer Tikka Masala Gravy", "price": "₹350"},
+    {"name": "RV Special Sabji", "price": "₹350"},
+
+    {"name": "Aalu Pyaz", "price": "₹150"},
+    {"name": "Aalu Gobhi", "price": "₹170"},
+    {"name": "Aalu Chola", "price": "₹180"},
+    {"name": "Aalu Palak", "price": "₹160"},
+    {"name": "Jeera Aalu", "price": "₹150"},
+    {"name": "Dam Aalu", "price": "₹180"},
+    {"name": "Sev Tamatar", "price": "₹160"},
+    {"name": "Sev Bhaji Milk", "price": "₹200"},
+    {"name": "Gatta Masala", "price": "₹160"},
+    {"name": "Chana Masala", "price": "₹160"},
+    {"name": "Bhindi Masala", "price": "₹150"},
+
+    {"name": "Dal Fry", "price": "₹140"},
+    {"name": "Dal Tadka", "price": "₹160"},
+    {"name": "Dal Makhni", "price": "₹180"},
+    {"name": "Lahsun Chatni", "price": "₹100"},
+    {"name": "Dahi Fry", "price": "₹100"},
+
+    {"name": "Plain Tandoori Roti", "price": "₹15"},
+    {"name": "Butter Tandoori Roti", "price": "₹20"},
+    {"name": "Ajwain Roti", "price": "₹25"},
+    {"name": "Missi Roti", "price": "₹40"},
+    {"name": "Plain Naan", "price": "₹45"},
+    {"name": "Butter Naan", "price": "₹55"},
+    {"name": "Stuff Naan", "price": "₹90"},
+    {"name": "Garlic Naan", "price": "₹80"},
+    {"name": "Lachha Paratha", "price": "₹60"},
+
+    {"name": "Tawa Plain Roti", "price": "₹10"},
+    {"name": "Tawa Butter Roti", "price": "₹15"},
+],
         },
         {
-            "title": "Fast Food",
-            "items": [
-                {"name": "Veg Burger", "description": "Loaded crunchy burger."},
-                {"name": "Cheese Burger", "description": "Burger with melted cheese."},
-                {"name": "French Fries", "description": "Crispy salted fries."},
-                {"name": "Peri Peri Fries", "description": "Fries with peri seasoning."},
-                {"name": "Veg Pizza", "description": "Classic veggie pizza."},
-                {"name": "Margherita Pizza", "description": "Cheese and basil pizza."},
-                {"name": "Paneer Pizza", "description": "Paneer topped pizza."},
-                {"name": "Cold Coffee", "description": "Chilled creamy coffee."},
-                {"name": "Chocolate Shake", "description": "Rich cocoa milkshake."},
-                {"name": "Vanilla Shake", "description": "Smooth vanilla shake."},
-                {"name": "Veg Sandwich", "description": "Fresh grilled sandwich."},
-                {"name": "Cheese Sandwich", "description": "Toasted cheese sandwich."},
-                {"name": "Veg Wrap", "description": "Soft wrap with fillings."},
-                {"name": "Paneer Wrap", "description": "Spicy paneer roll."},
-                {"name": "Spring Roll", "description": "Crispy veggie rolls."},
-                {"name": "Momos", "description": "Steamed dumplings with dip."},
-                {"name": "Pasta in Red Sauce", "description": "Tangy tomato pasta."},
-                {"name": "Pasta in White Sauce", "description": "Creamy white sauce pasta."},
-            ],
+    "title": "Fast Food",
+    "items": [
+    {"name": "Special Chai", "price": "₹10"},
+    {"name": "Kulhad Chai", "price": "₹20"},
+    {"name": "Hot Coffee", "price": "₹25"},
+    {"name": "Hot Milk", "price": "₹30"},
+    {"name": "Meethi Lassi", "price": "₹40"},
+    {"name": "Chhach", "price": "₹20"},
+
+    {"name": "Samosa", "price": "₹20"},
+    {"name": "Dal Kachori", "price": "₹20"},
+    {"name": "Aloo Pyaz Kachori", "price": "₹25"},
+    {"name": "Mirchi Bada", "price": "₹20"},
+    {"name": "Bread Pakoda", "price": "₹25"},
+
+    {"name": "Aloo Paratha", "price": "₹60"},
+    {"name": "Aloo Pyaz Paratha", "price": "₹60"},
+    {"name": "Mix Paratha", "price": "₹80"},
+    {"name": "Paneer Paratha", "price": "₹100"},
+    {"name": "Plain Paratha", "price": "₹40"},
+    {"name": "Amul Butter (Extra)", "price": "₹10"},
+
+    {"name": "Kadhi Chawal", "price": "₹70"},
+    {"name": "Chola Chawal", "price": "₹80"},
+    {"name": "Kadhi Chola Chawal", "price": "₹100"},
+
+    {"name": "Chola Bhatura", "price": "₹80"},
+    {"name": "Extra Bhatura", "price": "₹20"},
+    {"name": "Pav Bhaji", "price": "₹60"},
+    {"name": "Poha", "price": "₹40"},
+    {"name": "Plain Maggi", "price": "₹50"},
+    {"name": "Veg Masala Maggi", "price": "₹70"},
+    {"name": "Veg Grill Sandwich", "price": "₹60"},
+    {"name": "Veg Cheese Grill Sandwich", "price": "₹80"},
+    {"name": "Veg Burger", "price": "₹40"},
+    {"name": "Cheese Burger", "price": "₹60"},
+    {"name": "Extra Pav", "price": "₹20"},
+
+    {"name": "Plain Dosa", "price": "₹80"},
+    {"name": "Masala Dosa", "price": "₹100"},
+    {"name": "Paneer Dosa", "price": "₹140"},
+    {"name": "Veg Uttapam", "price": "₹80"},
+    {"name": "Onion Uttapam", "price": "₹70"},
+    {"name": "Idli Sambar", "price": "₹50"},
+
+    {"name": "Veg Chowmein", "price": "₹70"},
+    {"name": "Chilli Paneer", "price": "₹180"},
+    {"name": "Chilli Potato", "price": "₹140"},
+    {"name": "Honey Chilli Potato", "price": "₹160"},
+    {"name": "Chilli Soyabean", "price": "₹100"},
+    {"name": "Crispy Veg", "price": "₹180"},
+        ],
         },
     ]
 
     if request.method == "POST":
         form = InquiryForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(
-                request,
-                "Thanks for reaching out. Our team will contact you shortly.",
+            inquiry = form.save()
+
+            # EMAIL CONTENT
+            subject = "New Inquiry from Website"
+            message = f"""
+    Name: {inquiry.name}
+    Phone: {inquiry.phone}
+    Email: {inquiry.email}
+    Service: {inquiry.service}
+    Message: {inquiry.message}
+    """
+
+            send_mail(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                ['yashrajchandel090@gmail.com'], 
+                fail_silently=False,
             )
+            
+
+            messages.success(request, "Inquiry sent successfully!")
             return redirect("home")
     else:
         form = InquiryForm()

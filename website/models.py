@@ -4,9 +4,8 @@ from django.db import models
 class Inquiry(models.Model):
     class Service(models.TextChoices):
         SWEETS = "sweets", "Sweets order"
-        DINING = "dining", "Restaurant booking"
-        CATERING = "catering", "Event catering"
-        BULK = "bulk", "Bulk corporate order"
+        ROOM = "room", "Room booking"
+        
 
     name = models.CharField(max_length=120)
     phone = models.CharField(max_length=20)

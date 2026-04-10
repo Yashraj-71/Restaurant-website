@@ -494,3 +494,116 @@ textarea {
         box-shadow: none;
     }
 }
+
+/* ===== MENU ACCORDION STYLE ===== */
+
+.menu-group-title {
+    cursor: pointer;
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.menu-group-title:hover {
+    background: linear-gradient(135deg, #ffe0b2, #ffcc80);
+    transform: translateY(-2px);
+}
+
+.menu-group-title::after {
+    content: "▼";
+    position: absolute;
+    right: 20px;
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
+}
+
+.menu-group.active .menu-group-title::after {
+    transform: rotate(180deg);
+}
+
+.menu-items {
+    display: none;
+    margin-top: 15px;
+    animation: slideDown 0.4s ease;
+}
+
+.menu-items .card {
+    transition: all 0.3s ease;
+    border-radius: 18px;
+}
+
+.menu-items .card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== MENU ROW LAYOUT (FIX) ===== */
+
+.menu-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin-top: 20px;
+}
+
+/* Each section box */
+.menu-group {
+    margin-top: 0;
+}
+
+.menu-group-title {
+    cursor: pointer;
+    background: #ffe0b2;
+    padding: 15px;
+    text-align: center;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.menu-group-title:hover {
+    background: linear-gradient(135deg, #ffe0b2, #ffcc80);
+    transform: translateY(-3px);
+}
+
+.menu-items {
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.menu-items .card {
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 8px;
+}
+.menu-item-name {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.price {
+    font-weight: bold;
+    color: #b54d1f;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+    .menu-row {
+        grid-template-columns: 1fr;
+    }
+}

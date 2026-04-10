@@ -25,7 +25,13 @@ SECRET_KEY = 'django-insecure-&myfl9q(i3r4$8s^8ncyjy**xb+%10!2!*kvh@2dirav@2bvyy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'rvsweets-and-restaurant.vercel.app',
+    'rvsweets-and-restaurant-nah4s2198-yashraj-chandels-projects.vercel.app',
+    '.vercel.app',  
+    'localhost',
+    '127.0.0.1'
+]
 
 
 # Application definition
@@ -115,7 +121,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = 'media/'
@@ -125,3 +131,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'yashrajchandel090@gmail.com'
+EMAIL_HOST_PASSWORD = 'jpvz kzla layh pkuj'
+
