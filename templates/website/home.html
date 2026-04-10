@@ -1,0 +1,194 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block title %}Rv sweets and restaurant | Taste worth celebrating{% endblock %}
+
+{% block content %}
+<header class="site-header">
+    <div class="container nav">
+        <a href="#top" class="brand">
+            <img
+                class="brand-logo"
+                src="{% static 'website/img/logoo.png' %}"
+                alt="Rv sweets and restaurant logo"
+            >
+            <span>Rv sweets and restaurant</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle navigation">Menu</button>
+        <nav class="nav-links">
+            <a href="#about">About</a>
+            <a href="#menu">Menu</a>
+            <a href="#rooms">Rooms</a>
+            <a href="#contact">Contact</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+<main id="top">
+    <section class="hero">
+        <div class="container hero-grid">
+            <div class="hero-copy">
+                <p class="eyebrow">Traditional flavor, modern hospitality</p>
+                <h1>Sweet memories start at Rv sweets and restaurant.</h1>
+                <p class="hero-text">
+                    From handcrafted mithai to full family meals and comfortable room stays, we bring warm hospitality to every visit.
+                </p>
+                <div class="hero-actions">
+                    <a class="button button-primary" href="#contact">Book an order</a>
+                    <a class="button button-secondary" href="#rooms">View rooms</a>
+                </div>
+                <ul class="stats">
+                    <li><strong>20+</strong><span>signature sweets</span></li>
+                    <li><strong>7 days</strong><span>fresh dining service</span></li>
+                    <li><strong>24</strong><span>comfortable guest rooms</span></li>
+                </ul>
+            </div>
+            <div class="hero-card">
+                <div class="hero-panel">
+                    <span class="panel-badge">Festival Special</span>
+                    <h2>Luxury sweet boxes for gifting</h2>
+                    <p>Curated assortments prepared fresh daily for gifting and special moments.</p>
+                </div>
+                <div class="hero-panel alt">
+                    <span class="panel-badge">Chef's Pick</span>
+                    <h2>Pure veg family dining</h2>
+                    <p>Comforting North Indian classics, snacks, and complete thali meals in one place.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="about">
+        <div class="container section-grid">
+            <div>
+                <p class="eyebrow">About us</p>
+                <h2>A neighborhood favorite for sweets, meals, and restful stays.</h2>
+            </div>
+            <p class="section-copy">
+                Rv sweets and restaurant is built for people who want trusted taste and warm service. We serve fresh sweets, wholesome meals, and cozy rooms with the same care for quick visits and longer stays.
+            </p>
+        </div>
+    </section>
+
+    <section class="section warm" id="menu">
+        <div class="container">
+            <div class="section-heading">
+                <p class="eyebrow">Our menu</p>
+                <h2>Fast Food, Restaurant, and Sweets</h2>
+            </div>
+            {% for section in menu_sections %}
+            <div class="menu-group">
+                <h3 class="menu-group-title">{{ section.title }}</h3>
+                <div class="cards">
+                    {% for item in section.items %}
+                    <article class="card reveal">
+                        <span class="card-tag">{{ section.title }}</span>
+                        <h3>{{ item.name }}</h3>
+                        <p>{{ item.description }}</p>
+                    </article>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="section" id="rooms">
+        <div class="container">
+            <div class="section-heading">
+                <p class="eyebrow">Rooms</p>
+                <h2>Comfortable rooms for families and travelers</h2>
+            </div>
+
+            <div class="slider reveal" data-slider>
+                <div class="slider-track" data-slider-track>
+                    <article class="slide is-active" data-slide>
+                        <img
+                            class="slide-image"
+                            src="{% static 'website/img/room3.jpeg' %}"
+                            alt="Deluxe room with king-size bed"
+                        >
+                        <div class="slide-content">
+                            <span class="card-tag">Deluxe</span>
+                            <h3>Deluxe Room</h3>
+                            <p>Spacious room with king-size bed, AC, Wi-Fi, and city view for a relaxing stay.</p>
+                        </div>
+                    </article>
+                    <article class="slide" data-slide>
+                        <img
+                            class="slide-image"
+                            src="{% static 'website/img/room2.jpeg' %}"
+                            alt="Family suite room for four guests"
+                        >
+                        <div class="slide-content">
+                            <span class="card-tag">Family</span>
+                            <h3>Family Suite</h3>
+                            <p>Perfect for 4 guests with extra space, modern washroom, and comfortable seating area.</p>
+                        </div>
+                    </article>
+                    <article class="slide" data-slide>
+                        <img
+                            class="slide-image"
+                            src="{% static 'website/img/room1.jpeg' %}"
+                            alt="Executive room with desk and modern interior"
+                        >
+                        <div class="slide-content">
+                            <span class="card-tag">Executive</span>
+                            <h3>Executive Room</h3>
+                            <p>Business-friendly stay with work desk, fast internet, and complimentary breakfast.</p>
+                        </div>
+                    </article>
+                </div>
+                <div class="slider-controls">
+                    <button type="button" class="slider-btn" data-slider-prev aria-label="Previous room">Prev</button>
+                    <button type="button" class="slider-btn" data-slider-next aria-label="Next room">Next</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section contact-section" id="contact">
+        <div class="container contact-grid">
+            <div>
+                <p class="eyebrow">Contact us</p>
+                <h2>Start your order or room inquiry</h2>
+                <p class="section-copy">
+                    Share a few details and we will get back to you about sweets orders, table bookings, or rooms.
+                </p>
+                <div class="contact-notes">
+                    <p><strong>Phone:</strong> +91 98765 43210</p>
+                    <p><strong>Email:</strong> hello@rvsweets.com</p>
+                    <p><strong>Hours:</strong> Open daily, 10:00 AM to 10:30 PM</p>
+                </div>
+            </div>
+            <div class="form-shell">
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="flash-success">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+                <form method="post" class="inquiry-form">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        {% for field in form %}
+                        <div class="field{% if field.name == 'message' %} field-full{% endif %}">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                            <div class="field-error">{{ field.errors|striptags }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button class="button button-primary" type="submit">Send inquiry</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
