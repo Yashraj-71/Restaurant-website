@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect, render
 from django.core.mail import send_mail
 from django.conf import settings
-from twilio.rest import Client
+
 
 from .forms import InquiryForm
 
@@ -191,25 +191,27 @@ def home(request):
 
             # EMAIL CONTENT
             subject = "New Inquiry from Website"
-            message = f"""
-    Name: {inquiry.name}
-    Phone: {inquiry.phone}
-    Email: {inquiry.email}
-    Service: {inquiry.service}
-    Message: {inquiry.message}
-    """
+        message = f"""
+Name: {inquiry.name}
+Phone: {inquiry.phone}
+Email: {inquiry.email}
+Service: {inquiry.service}
+Message: {inquiry.message}
+"""
 
+        try:
             send_mail(
                 subject,
                 message,
                 settings.EMAIL_HOST_USER,
-                ['yashrajchandel090@gmail.com'], 
+                ['yashrajchandel090@gmail.com'],
                 fail_silently=False,
             )
-            
+        except Exception as e:
+            print("Email Error:", e)
 
-            messages.success(request, "Inquiry sent successfully!")
-            return redirect("home")
+        messages.success(request, "Inquiry sent successfully!")
+        return redirect("home")
     else:
         form = InquiryForm()
 
