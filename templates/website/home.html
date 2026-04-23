@@ -7,11 +7,7 @@
 <header class="site-header">
     <div class="container nav">
         <a href="#top" class="brand">
-            <img
-                class="brand-logo"
-                src="{% static 'website/img/logoo.png' %}"
-                alt="Rv sweets and restaurant logo"
-            >
+            <img class="brand-logo" src="{% static 'website/img/logoo.png' %}" alt="Rv sweets and restaurant logo">
             <span>Rv sweets and restaurant</span>
         </a>
         <button class="nav-toggle" type="button" aria-label="Toggle navigation">Menu</button>
@@ -36,7 +32,8 @@
                 <p class="eyebrow">Traditional flavor, modern hospitality</p>
                 <h1>Sweet memories start at Rv sweets and restaurant.</h1>
                 <p class="hero-text">
-                    From handcrafted mithai to full family meals and comfortable room stays, we bring warm hospitality to every visit.
+                    From handcrafted mithai to full family meals and comfortable room stays, we bring warm hospitality
+                    to every visit.
                 </p>
                 <div class="hero-actions">
                     <a class="button button-primary" href="#contact">Book an order</a>
@@ -63,42 +60,39 @@
         </div>
     </section>
 
-<section class="section warm" id="menu">
-    <div class="container">
-        <div class="section-heading">
-            <p class="eyebrow">Our menu</p>
-            <h2>Fast Food, Restaurant, and Sweets</h2>
-        </div>
+    <section class="section warm" id="menu">
+        <div class="container">
+            <div class="section-heading">
+                <p class="eyebrow">Our menu</p>
+                <h2>Fast Food, Restaurant, and Sweets</h2>
+            </div>
 
-        <div class="menu-row">
-            {% for section in menu_sections %}
-            <div class="menu-group">
+            <div class="menu-row">
+                {% for section in menu_sections %}
+                <div class="menu-group">
 
-                <h3 class="menu-group-title"
-                    onclick="toggleMenu({{ forloop.counter }})">
-                    {{ section.title }}
-                </h3>
+                    <h3 class="menu-group-title" onclick="toggleMenu('{{ forloop.counter }}')">
+                        {{ section.title }}
+                    </h3>
 
-                <div id="menu-{{ forloop.counter }}"
-                    class="menu-items"
-                    style="display: none;">
+                    <div id="menu-{{ forloop.counter }}" class="menu-items" style="display: none;">
 
-                    {% for item in section.items %}
-                    <div class="card">
-                        <h3 style="display:flex; justify-content:space-between;">
-                        {{ item.name }}
-                        <span>{{ item.price }}</span>
-                        </h3>
+                        {% for item in section.items %}
+                        <div class="card">
+                            <h3 style="display:flex; justify-content:space-between;">
+                                {{ item.name }}
+                                <span>{{ item.price }}</span>
+                            </h3>
+                        </div>
+                        {% endfor %}
+
                     </div>
-                    {% endfor %}
 
                 </div>
-
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-    </div>
-</section>
+    </section>
 
     <section class="section" id="rooms">
         <div class="container">
@@ -109,42 +103,21 @@
 
             <div class="slider reveal" data-slider>
                 <div class="slider-track" data-slider-track>
-                    <article class="slide is-active" data-slide>
-                        <img
-                            class="slide-image"
-                            src="{% static 'website/img/room3.jpeg' %}"
-                            alt="Deluxe room with king-size bed"
-                        >
-                        <div class="slide-content">
-                            <span class="card-tag">Deluxe</span>
-                            <h3>Deluxe Room</h3>
-                            <p>Spacious room with king-size bed, AC, Wi-Fi, and city view for a relaxing stay.</p>
-                        </div>
+                    {% for room in rooms %}
+                    <article class="slide {% if forloop.first %}is-active{% endif %}" data-slide>
+                        <a href="{% url 'room_detail' room.slug %}" class="slide-link" style="display: contents;">
+                            <img class="slide-image" src="{% static 'website/img/' %}{{ room.image_name }}"
+                                alt="{{ room.name }}">
+                            <div class="slide-content">
+                                <span class="card-tag">{{ room.tag }}</span>
+                                <h3>{{ room.name }}</h3>
+                                <p>{{ room.description }}</p>
+                                <p class="price" style="margin-top: 0.5rem; font-weight: bold; color: var(--accent);">{{
+                                    room.price }}</p>
+                            </div>
+                        </a>
                     </article>
-                    <article class="slide" data-slide>
-                        <img
-                            class="slide-image"
-                            src="{% static 'website/img/room2.jpeg' %}"
-                            alt="Family suite room for four guests"
-                        >
-                        <div class="slide-content">
-                            <span class="card-tag">Family</span>
-                            <h3>Family Suite</h3>
-                            <p>Perfect for 4 guests with extra space, modern washroom, and comfortable seating area.</p>
-                        </div>
-                    </article>
-                    <article class="slide" data-slide>
-                        <img
-                            class="slide-image"
-                            src="{% static 'website/img/room1.jpeg' %}"
-                            alt="Executive room with desk and modern interior"
-                        >
-                        <div class="slide-content">
-                            <span class="card-tag">Executive</span>
-                            <h3>Executive Room</h3>
-                            <p>Business-friendly stay with work desk, fast internet, and complimentary breakfast.</p>
-                        </div>
-                    </article>
+                    {% endfor %}
                 </div>
                 <div class="slider-controls">
                     <button type="button" class="slider-btn" data-slider-prev aria-label="Previous room">Prev</button>
@@ -170,9 +143,9 @@
             </div>
             <div class="form-shell">
                 {% if messages %}
-                    {% for message in messages %}
-                    <div class="flash-success">{{ message }}</div>
-                    {% endfor %}
+                {% for message in messages %}
+                <div class="flash-success">{{ message }}</div>
+                {% endfor %}
                 {% endif %}
                 <form method="post" class="inquiry-form">
                     {% csrf_token %}
@@ -194,19 +167,19 @@
     </section>
 </main>
 <script>
-function toggleMenu(id) {
-    let current = document.getElementById("menu-" + id);
+    function toggleMenu(id) {
+        let current = document.getElementById("menu-" + id);
 
-    if (!current) return;
+        if (!current) return;
 
-    if (current.style.display === "block") {
-        current.style.display = "none";
-    } else {
-        document.querySelectorAll(".menu-items")
-            .forEach(menu => menu.style.display = "none");
+        if (current.style.display === "block") {
+            current.style.display = "none";
+        } else {
+            document.querySelectorAll(".menu-items")
+                .forEach(menu => menu.style.display = "none");
 
-        current.style.display = "block";
+            current.style.display = "block";
+        }
     }
-}
 </script>
 {% endblock %}
